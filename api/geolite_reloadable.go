@@ -132,8 +132,12 @@ func (d *ReloadableGeoIPDB) reloadIfChanged() error {
 	}
 
 	d.mu.Lock()
+	// Re-check under the write lock: the Open above runs unlocked, so a
+	// concurrent Close may have set d.db to nil meanwhile. Swapping next in
+	// anyway would revive the database after Close reported success, leaving a
+	// reader nobody closes. Harmless if the process exits right away, but not
+	// when Close is followed by more work in the same process.
 	if d.db == nil {
-		// Closed while we were opening the replacement.
 		d.mu.Unlock()
 		_ = next.Close()
 		return nil
