@@ -337,6 +337,47 @@ Resolves the requested IP address, returns all metadata found in MaxMind GeoLite
 > Risk (stanza `risk`) is assessed only if a valid `ABUSEIPDB_API_KEY` is provided. 
 > AbuseIP**DB** is allowing 1000 requests/day on the free tier, which is more than enough for hobby and non-commercial use.
 
+### `/meta`
+
+Returns the metadata section of the loaded MaxMind GeoLite2 databases as `JSON` — mainly useful to tell how fresh
+the data behind a lookup is:
+
+```json
+{
+  "databases": {
+    "asn": {
+      "type": "GeoLite2-ASN",
+      "description": "GeoLite2 ASN database",
+      "build_time": "2026-01-05T08:16:00Z",
+      "ip_version": 6,
+      "languages": ["en"],
+      "node_count": 1432871,
+      "record_size": 24,
+      "binary_format_version": "2.0"
+    },
+    "city": {
+      "type": "GeoLite2-City",
+      "description": "GeoLite2 City database",
+      "build_time": "2026-01-02T09:15:12Z",
+      "ip_version": 6,
+      "languages": ["de", "en", "es", "fr", "ja", "pt-BR", "ru", "zh-CN"],
+      "node_count": 5786704,
+      "record_size": 28,
+      "binary_format_version": "2.0"
+    }
+  }
+}
+```
+
+> [!NOTE]
+> `node_count` and `record_size` describe the internal search tree, not the data — they are handy to identify exactly
+> which database file is mounted (e.g. to spot a truncated or sample database), but carry no meaning for the lookup
+> results themselves.
+
+> [!NOTE]
+> The values reflect the databases currently in use, so after a hot reload `/meta` reports the new build times without
+> a restart.
+
 ## License
 
 This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.

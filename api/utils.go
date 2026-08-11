@@ -1,9 +1,14 @@
 package api
 
 import (
+	"fmt"
 	"net"
 	"net/netip"
 )
+
+func fmtVersion(major, minor uint) string {
+	return fmt.Sprintf("%d.%d", major, minor)
+}
 
 func netIPToNetipAddr(ip net.IP) (netip.Addr, bool) {
 	if ip == nil {

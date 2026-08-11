@@ -91,6 +91,7 @@ func main() {
 	r.Get("/own/all", apis.GetOwnIPAll)
 	r.Get("/lookup/{ip}", apis.LookupIPAll)
 	r.Get("/health", apis.GetHealth)
+	r.Get("/meta", apis.GetMeta)
 
 	srv := &http.Server{Addr: cfg.ListenAddr, Handler: r}
 

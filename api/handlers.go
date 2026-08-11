@@ -19,6 +19,20 @@ func (s *Server) GetHealth(w http.ResponseWriter, r *http.Request) {
 	_, _ = w.Write([]byte("ok"))
 }
 
+func (s *Server) GetMeta(w http.ResponseWriter, r *http.Request) {
+	res := MetaResult{Databases: make(map[string]DatabaseInfo, 2)}
+
+	if s.AsnReader != nil {
+		res.Databases["asn"] = s.AsnReader.Info()
+	}
+	if s.CityReader != nil {
+		res.Databases["city"] = s.CityReader.Info()
+	}
+
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	_ = json.NewEncoder(w).Encode(res)
+}
+
 func (s *Server) GetOwnIP(w http.ResponseWriter, r *http.Request) {
 	ipStr := s.GetClientIP(r)
 	if ipStr == "" {

@@ -7,7 +7,7 @@ DOCKERFILE ?= Dockerfile
 # Build binary
 build:
 	@echo "Building Go binary..."
-	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o bin/ipquery .
+	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o bin/ipquery ./cmd
 
 # Build Docker image
 docker-build:

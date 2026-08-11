@@ -18,7 +18,10 @@ func NewCityReader(path string) (*CityReader, error) {
 		return nil, fmt.Errorf("open city mmdb: %w", err)
 	}
 
-	slog.Info("city mmdb opened", "path", path, "type", db.DatabaseType())
+	info := db.Info()
+	slog.Info("city mmdb opened", "path", path, "type", info.Type,
+		"built", info.BuildTime.Format(time.RFC3339),
+		"nodes", info.NodeCount, "record_size", info.RecordSize)
 
 	return &CityReader{db: db}, nil
 }
@@ -30,6 +33,9 @@ func (c *CityReader) StartWatcher(ctx context.Context, interval time.Duration) {
 }
 
 func (c *CityReader) Close() error { return c.db.Close() }
+
+// Info returns the metadata of the underlying mmdb file.
+func (c *CityReader) Info() DatabaseInfo { return c.db.Info() }
 
 type cityRecord struct {
 	Country struct {

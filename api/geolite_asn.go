@@ -23,7 +23,10 @@ func NewAsnReader(path string) (*AsnReader, error) {
 		return nil, fmt.Errorf("open asn mmdb: %w", err)
 	}
 
-	slog.Info("asn mmdb opened", "path", path, "type", db.DatabaseType())
+	info := db.Info()
+	slog.Info("asn mmdb opened", "path", path, "type", info.Type,
+		"built", info.BuildTime.Format(time.RFC3339),
+		"nodes", info.NodeCount, "record_size", info.RecordSize)
 
 	return &AsnReader{db: db}, nil
 }
@@ -35,6 +38,9 @@ func (a *AsnReader) StartWatcher(ctx context.Context, interval time.Duration) {
 }
 
 func (a *AsnReader) Close() error { return a.db.Close() }
+
+// Info returns the metadata of the underlying mmdb file.
+func (a *AsnReader) Info() DatabaseInfo { return a.db.Info() }
 
 func (a *AsnReader) Enrich(ip net.IP, out *LookupResult) error {
 	addr, ok := netIPToNetipAddr(ip)
